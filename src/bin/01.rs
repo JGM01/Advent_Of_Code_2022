@@ -1,51 +1,29 @@
 pub fn part_one(input: &str) -> Option<u32> {
     let mut most_calories: u32 = 0;
-    let clean_input = input.replace("\r", "");
-    let rations_lists = clean_input.split("\n\n");
     
-    for elf in rations_lists {
+    for elf in input.replace("\r", "").split("\n\n") {
         let rations: Vec<u32> = elf.lines().map(|x| x.parse().unwrap()).collect();
         let total_calories = rations.iter().sum();
         if total_calories > most_calories {
             most_calories = total_calories;
         }
     }
-    
     Some(most_calories)
-    
 }
 
-pub fn part_two(input: &str) -> Option<u32> {    
-    let mut top_three: Vec<u32> = vec![0; 3];
+pub fn part_two(input: &str) -> Option<u32> {
+    let mut vector: Vec<u32> = Vec::new();
     
-    let clean_input = input.replace("\r", "");
-    let rations_lists = clean_input.split("\n\n");
-    
-    for elf in rations_lists {
+    for elf in input.replace("\r", "").split("\n\n") {
         let rations: Vec<u32> = elf.lines().map(|x| x.parse().unwrap()).collect();
-        let total_calories = rations.iter().sum();
+        let total_calories: u32 = rations.iter().sum();
         
-        top_three = change_rankings(top_three, total_calories)
+        match vector.binary_search(&total_calories) {
+            Ok(_pos) => {}
+            Err(pos) => vector.insert(pos, total_calories),
+        }
     }
-    
-    let most_calories: u32 = top_three.iter().sum();
-    
-    Some(most_calories)
-}
-
-
-fn change_rankings(mut current_ranking: Vec<u32>, new_entry: u32) -> Vec<u32> {
-    if new_entry > current_ranking[0] {
-        current_ranking[2] = current_ranking[1];
-        current_ranking[1] = current_ranking[0];
-        current_ranking[0] = new_entry;
-    } else if new_entry > current_ranking[1] {
-        current_ranking[2] = current_ranking[1];
-        current_ranking[1] = new_entry;
-    } else if new_entry > current_ranking[2] {
-        current_ranking[2] = new_entry;
-    }
-    current_ranking
+    Some(vector[0] + vector[1] + vector[2])
 }
 
 fn main() {

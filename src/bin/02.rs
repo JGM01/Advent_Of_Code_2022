@@ -1,50 +1,40 @@
 pub fn part_one(input: &str) -> Option<u32> {
     
-    let mut total_score: u32 = 0;
-    
-    for round in input.lines() {
-        let choices: Vec<&str> = round.split_whitespace().collect();
-        let opp = choices[0];
-        let you = choices[1];
-        let mut score: u32 = 0;
-        
-        match you {
-            "X" => {
-                score += 1;
+    let answers: u32 = input.lines().map(|x| {
+                let bytes = x.as_bytes();
+                let you = bytes[2] as char;
+                let opp = bytes[0] as char;
                 
-                match opp {
-                    "A" => score += 3,
-                    "B" => score += 0,
-                    "C" => score += 6,
-                    _ => {}
+                match you {
+                    'X' => {
+                        match opp {
+                            'A' => 4,
+                            'B' => 1,
+                            'C' => 7,
+                            _ => 0
+                        }
+                    },
+                    'Y' => {
+                        match opp {
+                            'A' => 8,
+                            'B' => 5,
+                            'C' => 2,
+                            _ => 0
+                        }
+                    },
+                    'Z' => {
+                        match opp {
+                            'A' => 3,
+                            'B' => 9,
+                            'C' => 6,
+                            _ => 0
+                        }
+                    },
+                    _ => 0
                 }
-            },
-            "Y" => {
-                score += 2;
-                
-                match opp {
-                    "A" => score += 6,
-                    "B" => score += 3,
-                    "C" => score += 0,
-                    _ => {}
-                }
-            },
-            "Z" => {
-                score += 3;
-                
-                match opp {
-                    "A" => score += 0,
-                    "B" => score += 6,
-                    "C" => score += 3,
-                    _ => {}
-                }
-            },
-            _ => {}
-        }
-        total_score += score;
-    }
-    
-    Some(total_score)
+            })
+            .sum();
+    Some(answers)
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
@@ -88,6 +78,19 @@ pub fn part_two(input: &str) -> Option<u32> {
     
     Some(total_score)
 }
+
+enum Shape {
+    ROCK = 0,
+    PAPER = 1,
+    SCISSORS = 2,
+}
+
+enum RoundState {
+    LOSS = 0,
+    DRAW = 1,
+    WIN = 2,
+}
+
 
 fn main() {
     let input = &advent_of_code::read_file("inputs", 2);
